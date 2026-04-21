@@ -1,7 +1,7 @@
 [general]
-name=Snap!
-description=Digitize points through snapping photos
-author=OPENGIS.ch
+name=Snap! (Configurable)
+description=Digitize points through snapping photos, with configurable target layer and field via a setup dialogue
+author=OPENGIS.ch (original); TyHol (configurable fork)
 icon=icon.svg
-version=1.1
-homepage=https://www.opengis.ch/
+version=1.2
+homepage=https://github.com/TyHol/qfield-snap-configurable
