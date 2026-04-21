@@ -1,49 +1,80 @@
-# Snap! QField Plugin
+# Snap! QField Plugin (Configurable)
 
 The Snap! QField Plugin is a one-click solution for adding features with pictures directly from your device's camera using QField.
-This plugin simplifies the field data collection process by allowing users to quickly capture and attach photos to their geospatial data.
+This fork extends the [original plugin by opengisch](https://github.com/opengisch/qfield-snap) with a setup dialogue that lets you configure which layer and field photos are saved to — without needing to edit any code.
 
 ![Teaser](teaser.gif)
 
 ## Features
-- **One-click feature addition:** Add new features with a single click.
-- **Camera integration:** Automatically open the camera to take pictures and attach them to the features.
-- **Streamlined workflow:** Designed specifically for QField, ensuring a smooth field data collection experience.
+
+- **One-click feature addition:** Add a new point feature with a single tap.
+- **Camera integration:** Automatically opens the camera; the photo is attached to the new feature.
+- **Configurable target layer:** Pin the plugin to a specific point layer rather than always following the active layer.
+- **Configurable target field:** Choose exactly which field the photo path is written to.
+- **Persistent settings:** Your layer and field choices are remembered between sessions.
+- **Smart fallback:** If no layer/field is explicitly configured, the plugin falls back to the active layer and searches for a field named `photo`, `picture`, `image`, `media`, or `camera`.
+
+## Setup Dialogue
+
+The setup dialogue lets you choose the target layer and field.
+
+<!-- Add screenshot here -->
+
+It opens automatically in three situations:
+
+1. **Long-press** the Snap! toolbar button at any time.
+2. The active layer is **not a point layer**.
+3. No field matching the candidate names (`photo`, `picture`, `image`, `media`, `camera`) is found and no field has been explicitly configured.
+
+### Layer dropdown
+
+Lists all editable point layers in the project. Select **Active Layer** to follow whichever layer is active at the time of capture (the original behaviour).
+
+### Field dropdown
+
+Lists all fields in the selected layer. Select the field you want the photo path written into. The dropdown pre-selects your previously saved choice, or the first candidate-name match if no choice has been saved yet.
+
+> **Note:** The photo path is a relative text string — choose a text/string field.
 
 ## Installation
 
 1. **Download QField:**
    - Install [QField on your device](https://qfield.org/get).
 
-2. **Install Snap! QField Plugin:**
-   - See https://docs.qfield.org/how-to/plugins/
+2. **Install the plugin:**
+   - See [QField plugin documentation](https://docs.qfield.org/how-to/plugins/) for how to sideload a plugin from a local folder or URL.
 
 ## Usage
 
-1. **Activate the Plugin:**
-   - Open QField, go to the settings panel, and open the plugin manager.
-   - Ensure the `Snap!` plugin is activated.
+1. **Activate the plugin** in QField's plugin manager.
 
-2. **Add Features with Photos:**
-   - Select the layer where you want to add a feature.
-   - Click on the `Snap!` button.
-   - The camera will open automatically. Take a picture of the feature.
-   - The new feature will be added to the layer with the photo attached.
+2. **Configure the target layer and field** (optional):
+   - Long-press the Snap! button to open the setup dialogue.
+   - Select your target layer and field, then tap **Save**.
 
-## Detailed Explanation
+3. **Capture a photo:**
+   - Tap the Snap! button.
+   - The camera opens automatically. Take the photo.
+   - The new feature form opens with the photo path pre-filled and your current GPS position set as the geometry.
 
-For a detailed explanation of the code and functionality, please refer to our [blog post](https://www.opengis.ch/fr/2024/06/18/supercharge-your-fieldwork-with-qfields-project-and-app-wide-plugins/).
+## Advanced: code-level defaults
+
+For deployments where the layer and field should be fixed in the plugin file itself, edit the two properties near the top of `main.qml`:
+
+```qml
+// Candidate field names searched when no field is explicitly configured
+property var candidates: ["photo", "picture", "image", "media", "camera"]
+
+// Set to a layer name to pin the plugin to that layer by default
+// (overridden by the setup dialogue at runtime; "" means use the active layer)
+property var targetLayer: ""
+```
+
+## Credits
+
+Based on the original [Snap! plugin](https://github.com/opengisch/qfield-snap) by [opengisch](https://github.com/opengisch).
+For a detailed explanation of the original plugin, see their [blog post](https://www.opengis.ch/fr/2024/06/18/supercharge-your-fieldwork-with-qfields-project-and-app-wide-plugins/).
 
 ## Contributing
 
-Contributions are welcome!
-
-## Contact
-
-If you have any questions or feedback, please open an issue on our [GitHub repository](https://github.com/opengisch/snap-qfield/issues).
-
----
-
-Thank you for using the Snap! QField Plugin! Happy mapping!
-
----
+Issues and pull requests welcome on the [GitHub repository](https://github.com/TyHol/qfield-snap-configurable).
