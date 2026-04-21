@@ -388,6 +388,9 @@ Item {
       feature.setAttribute(fieldNames.indexOf(fieldName), relativePath)
     }
 
+    // currentLayer must be set explicitly so the form saves to the configured
+    // layer rather than defaulting to whatever is active in the dashboard
+    overlayFeatureFormDrawer.featureModel.currentLayer = layer
     overlayFeatureFormDrawer.featureModel.feature = feature
     overlayFeatureFormDrawer.featureModel.resetAttributes(true)
     overlayFeatureFormDrawer.state = 'Add'
