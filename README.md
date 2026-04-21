@@ -18,7 +18,8 @@ This fork extends the [original plugin by opengisch](https://github.com/opengisc
 
 The setup dialogue lets you choose the target layer and field.
 
-<!-- Add screenshot here -->
+<img width="308" height="578" alt="Snap-config" src="https://github.com/user-attachments/assets/c4aa50fd-0736-494d-93ef-039b28007956" />
+
 
 It opens automatically in three situations:
 
