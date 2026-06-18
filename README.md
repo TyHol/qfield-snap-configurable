@@ -4,6 +4,8 @@ A multi-mode capture plugin for QField — photo, video, audio, sketch, and
 voice/text notes, all from one toolbar button. Configurable target layer,
 media field, notes field, and default tap action.
 
+Install: <img width="80" height="80" alt="image" src="https://github.com/user-attachments/assets/bf9d3264-5a2d-41c9-9c01-b3811e9c1d0d" />
+
 This fork extends the [original plugin by opengisch](https://github.com/opengisch/qfield-snap)
 with multiple capture modes and a setup dialogue.
 
