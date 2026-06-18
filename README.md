@@ -1,41 +1,79 @@
-# Snap! QField Plugin (Configurable)
+# Snap! QField Plugin (Multi-Mode)
 
-The Snap! QField Plugin is a one-click solution for adding features with pictures directly from your device's camera using QField.
-This fork extends the [original plugin by opengisch](https://github.com/opengisch/qfield-snap) with a setup dialogue that lets you configure which layer and field photos are saved to — without needing to edit any code.
+A multi-mode capture plugin for QField — photo, video, audio, sketch, and
+voice/text notes, all from one toolbar button. Configurable target layer,
+media field, notes field, and default tap action.
+
+This fork extends the [original plugin by opengisch](https://github.com/opengisch/qfield-snap)
+with multiple capture modes and a setup dialogue.
 
 ![Teaser](teaser.gif)
 
 ## Features
 
-- **One-click feature addition:** Add a new point feature with a single tap.
-- **Camera integration:** Automatically opens the camera; the photo is attached to the new feature.
-- **Configurable target layer:** Pin the plugin to a specific point layer rather than always following the active layer.
-- **Configurable target field:** Choose exactly which field the photo path is written to.
-- **Persistent settings:** Your layer and field choices are remembered between sessions.
-- **Smart fallback:** If no layer/field is explicitly configured, the plugin falls back to the active layer and searches for a field named `photo`, `picture`, `image`, `media`, or `camera`.
+- **Multi-mode capture:** Camera (photo & video), audio recording, sketch
+  drawing, and voice/text notes — all from one button.
+- **One-tap or chooser:** Set a default mode for single-tap capture, or
+  choose "Ask each time" to see a mode picker dialog.
+- **Camera with video toggle:** Photo and video capture in one interface
+  (`allowCaptureModeToggle`).
+- **Audio recording:** Records audio clips via QField's built-in audio
+  recorder.
+- **Sketch:** Opens QField's built-in sketcher for freehand drawings.
+- **Voice / Text Note:** Dictate via your keyboard's microphone button, or
+  type directly. The text is written into a configurable notes field.
+- **Configurable target layer:** Pin the plugin to a specific point layer
+  rather than always following the active layer.
+- **Configurable media field:** Choose exactly which field the photo/video/
+  audio/sketch path is written to.
+- **Configurable notes field:** Choose which text field receives dictated or
+  typed notes.
+- **Persistent settings:** All choices are remembered between sessions.
+- **Smart fallback:** If no layer/field is explicitly configured, the plugin
+  falls back to the active layer and searches for candidate field names.
 
 ## Setup Dialogue
 
-The setup dialogue lets you choose the target layer and field.
+Long-press the toolbar button at any time to open the setup dialogue.
 
-<img width="308" height="578" alt="Snap-config" src="https://github.com/user-attachments/assets/c4aa50fd-0736-494d-93ef-039b28007956" />
-
-
-It opens automatically in three situations:
-
-1. **Long-press** the Snap! toolbar button at any time.
-2. The active layer is **not a point layer**.
-3. No field matching the candidate names (`photo`, `picture`, `image`, `media`, `camera`) is found and no field has been explicitly configured.
+It also opens automatically when:
+- The active layer is **not a point layer**.
+- No field matching the candidate names is found and no field has been
+  explicitly configured.
 
 ### Layer dropdown
 
-Lists all editable point layers in the project. Select **Active Layer** to follow whichever layer is active at the time of capture (the original behaviour).
+Lists all editable point layers in the project. Select **Active Layer** to
+follow whichever layer is active at the time of capture (the original
+behaviour).
 
-### Field dropdown
+### Media field dropdown
 
-Lists all fields in the selected layer. Select the field you want the photo path written into. The dropdown pre-selects your previously saved choice, or the first candidate-name match if no choice has been saved yet.
+Lists all fields in the selected layer. Select the field you want the
+photo/video/audio/sketch path written into.
 
-> **Note:** The photo path is a relative text string — choose a text/string field.
+> **Note:** The media path is a relative text string — choose a text/string
+> field.
+
+### Notes field dropdown
+
+Lists all fields in the selected layer, plus "— none —". Select the text
+field you want voice/text notes written into. If left as "— none —", the
+plugin searches for a field named `note`, `notes`, `description`, `comment`,
+or `comments`. If none of these exist, the Voice / Text Note action is
+disabled.
+
+### Tap action dropdown
+
+Choose the default capture mode:
+- **Ask each time** — tapping the toolbar button opens a dialog with all
+  four modes.
+- **Camera (Photo / Video)** — opens the camera directly (default).
+- **Audio Recording** — starts the audio recorder directly.
+- **Sketch** — opens the sketcher directly.
+- **Voice / Text Note** — opens the note dialog directly.
+
+Long-press always opens the setup dialogue regardless of this setting.
 
 ## Installation
 
@@ -43,28 +81,47 @@ Lists all fields in the selected layer. Select the field you want the photo path
    - Install [QField on your device](https://qfield.org/get).
 
 2. **Install the plugin:**
-   - See [QField plugin documentation](https://docs.qfield.org/how-to/plugins/) for how to sideload a plugin from a local folder or URL.
+   - See [QField plugin documentation](https://docs.qfield.org/how-to/plugins/)
+     for how to sideload a plugin from a local folder or URL.
 
 ## Usage
 
 1. **Activate the plugin** in QField's plugin manager.
 
-2. **Configure the target layer and field** (optional):
-   - Long-press the Snap! button to open the setup dialogue.
-   - Select your target layer and field, then tap **Save**.
+2. **Configure** (optional):
+   - Long-press the toolbar button to open the setup dialogue.
+   - Select your target layer, media field, notes field, and default tap
+     action, then tap **Save**.
 
-3. **Capture a photo:**
-   - Tap the Snap! button.
-   - The camera opens automatically. Take the photo.
-   - The new feature form opens with the photo path pre-filled and your current GPS position set as the geometry.
+3. **Capture:**
+   - **Tap** the toolbar button to run the default mode (or open the mode
+     chooser if set to "Ask each time").
+   - The chosen capture tool opens. Complete the capture.
+   - The new feature form opens with the media path or note text pre-filled
+     and your current GPS position set as the geometry.
+
+## Technical notes
+
+- **Camera/Audio** use QField's `QFieldCamera` and `QFieldAudioRecorder`
+  components via `Loader` (instantiated on demand, destroyed on close).
+- **Sketch** uses the app-level `QFieldSketcher` singleton accessed via
+  `iface.findItemByObjectName('sketcher')` — it cannot be instantiated
+  standalone from a plugin.
+- **Mode chooser** uses a plain `Dialog` with `Button` items. The original
+  `QfToolButtonPie` (pie menu) is not reliably accessible from plugins.
+- **Icons** use `Theme.getThemeVectorIcon()` for cross-platform rendering.
 
 ## Advanced: code-level defaults
 
-For deployments where the layer and field should be fixed in the plugin file itself, edit the two properties near the top of `main.qml`:
+For deployments where the layer and field should be fixed in the plugin file
+itself, edit the properties near the top of `main.qml`:
 
 ```qml
-// Candidate field names searched when no field is explicitly configured
+// Candidate field names for media (photo/video/audio/sketch path)
 property var candidates: ["photo", "picture", "image", "media", "camera"]
+
+// Candidate field names for text notes
+property var noteCandidates: ["note", "notes", "description", "comment", "comments"]
 
 // Set to a layer name to pin the plugin to that layer by default
 // (overridden by the setup dialogue at runtime; "" means use the active layer)
@@ -73,9 +130,12 @@ property var targetLayer: ""
 
 ## Credits
 
-Based on the original [Snap! plugin](https://github.com/opengisch/qfield-snap) by [opengisch](https://github.com/opengisch).
-For a detailed explanation of the original plugin, see their [blog post](https://www.opengis.ch/fr/2024/06/18/supercharge-your-fieldwork-with-qfields-project-and-app-wide-plugins/).
+Based on the original [Snap! plugin](https://github.com/opengisch/qfield-snap)
+by [opengisch](https://github.com/opengisch). For a detailed explanation of
+the original plugin, see their
+[blog post](https://www.opengis.ch/fr/2024/06/18/supercharge-your-fieldwork-with-qfields-project-and-app-wide-plugins/).
 
 ## Contributing
 
-Issues and pull requests welcome on the [GitHub repository](https://github.com/TyHol/qfield-snap-configurable).
+Issues and pull requests welcome on the
+[GitHub repository](https://github.com/TyHol/qfield-snap-configurable).
